@@ -1,0 +1,54 @@
+    1  ll
+    2  clear
+    3  ll
+    4  sudoers
+    5  su
+    6  sudo
+    7  sudo -v
+    8  clear
+    9  ll
+   10  mkdir Documents
+   11  cd Documents/
+   12  ll
+   13  clear
+   14  ll
+   15  git clone https://github.com/atnevin32/Food-Security-Dashboard.git
+   16  ll
+   17  cd Food-Security-Dashboard/
+   18  ll
+   19  vim README.md
+   20  exit
+   21  clear
+   22  ll
+   23  cd Documents/
+   24  ll
+   25  cd Food-Security-Dashboard/
+   26  ll
+   27  vim README.md 
+   28  git add README.md 
+   29  git commit -m "Adding basic readme doc"
+   30  git push origin main
+   31  sudo apt-get install -y apt-transport-https software-properties-common wget
+   32  sudo apt update
+   33  sudo apt upgrade
+   34  sudo apt-get install -y apt-transport-https software-properties-common wget
+   35  sudo mkdir -p /etc/apt/keyrings/
+   36  ev/null
+   37  sudo mkdir -p /etc/apt/keyrings/
+   38  wget -q -O - https://apt.grafana.com/gpg.key | gpg --dearmor | sudo tee /etc/apt/keyrings/grafana.gpg > /dev/null
+   39  echo "deb [signed-by=/etc/apt/keyrings/grafana.gpg] https://apt.grafana.com stable main" | sudo tee -a /etc/apt/sources.list.d/grafana.list
+   40  sudo apt-get update
+   41  sudo apt-get install grafana
+   42  sudo systemctl status grafana-server
+   43  sudo systemctl daemon-reload
+   44  sudo systemctl daemon-reload
+   45  sudo systemctl start grafana-server
+   46  sudo systemctl status grafana-server
+   47  sudo systemctl edit grafana-server.service
+   48  clear
+   49  ll
+   50  vim README.md 
+   51  history
+   52  tmux
+   53  ll
+   54  history >> history.txt

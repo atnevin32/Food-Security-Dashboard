@@ -34,3 +34,16 @@ sudo systemctl edit grafana-server.service
 Alex has the access details.
 
 Need to change the running port, SSL, domain name, create users.
+
+
+### MySQL Ver 8.0.42
+MySQL has been installed on the Ubuntu server, ready to be connected to Grafana.
+
+So far, only the root user has access. The database can be connected to by running the following commands:
+```
+$> sudo su
+$> mysql -u root
+```
+
+Note that no databases/tables currently exist, and all security settings have been applied.
+I've loaded a kaggle dataset onto the ubuntu machine, but yet to load the data into MySQL.
