@@ -45,5 +45,56 @@ $> sudo su
 $> mysql -u root
 ```
 
-Note that no databases/tables currently exist, and all security settings have been applied.
-I've loaded a kaggle dataset onto the ubuntu machine, but yet to load the data into MySQL.
+I've created a database called grafana_data, and some tables to store mock data. 
+The mock data is from a food security dataset on kaggle, I'll use it to populate the following tables:
+pesticides
+rainfall
+yield
+yield_df
+
+```
+mysql> CREATE DATABASE grafana_data;
+mysql> USE grafana_data;
+mysql> CREATE TABLE pesticides (
+    Area VARCHAR(100),
+    Element VARCHAR(100),
+    Item VARCHAR(100),
+    Year YEAR,
+    Unit VARCHAR(100),
+    Value INT
+);
+mysql> INSERT INTO pesticides VALUES("Albania", "Use", "Pesticides (Total)", "1998", "tonnes of active ingredients", "439.89");
+
+CREATE USER 'user'@'localhost' IDENTIFIED BY '****';
+GRANT INSERT, UPDATE, DELETE ON grafana_data.pesticides TO 'user'@'localhost';
+
+CREATE USER 'grafana_read'@'localhost' IDENTIFIED BY '****';
+
+```
+### Making Grafana Widgets
+I've created a test Dashboard on Grafana called Food Security Statistics.
+If you open that, I've created two widgets, one is the avg of tons of pesticides across all countries per year, the other is a time series of each country/how much pesticides they use/year.
+
+The backend SQL statement for the average of tons per year is:
+```
+SELECT
+  AVG(Value)
+FROM
+  grafana_data.pesticides
+GROUP BY
+  Year
+LIMIT
+  50
+```
+
+The backend SQL statement for the time series is:
+```
+SELECT
+  STR_TO_DATE(CONCAT(Year, '-01-01'), '%Y-%m-%d') AS time,
+  Area AS country,
+  Value AS pesticide_value
+FROM
+  grafana_data.pesticides
+ORDER BY
+  time ASC;
+```
