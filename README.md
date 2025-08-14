@@ -49,8 +49,7 @@ I've created a database called grafana_data, and some tables to store mock data.
 The mock data is from a food security dataset on kaggle, I'll use it to populate the following tables:
 pesticides
 rainfall
-yield
-yield_df
+
 
 ```
 mysql> CREATE DATABASE grafana_data;
@@ -71,9 +70,11 @@ GRANT INSERT, UPDATE, DELETE ON grafana_data.pesticides TO 'user'@'localhost';
 CREATE USER 'grafana_read'@'localhost' IDENTIFIED BY '****';
 
 ```
+
 ### Making Grafana Widgets
 I've created a test Dashboard on Grafana called Food Security Statistics.
 If you open that, I've created two widgets, one is the avg of tons of pesticides across all countries per year, the other is a time series of each country/how much pesticides they use/year.
+
 
 The backend SQL statement for the average of tons per year is:
 ```
@@ -98,3 +99,19 @@ FROM
 ORDER BY
   time ASC;
 ```
+
+
+More instructions on how to access:
+1. Open the dashboards tab on the Grafana dashboard
+![Grafana Dashboard](src/Images/Grafana_Select_Dashboard.png)
+2. Edit the dashboard
+![Grafana Edit Dashboard](src/Images/Grafana_Select_Edit.png)
+3. Add the Visualization Widget
+![Grafana Add Visualization](src/Images/Grafana_Select_Visualization.png)
+4. Edit the widget using the builder mode
+![Grafana Widget Builder](src/Images/Grafana_Select_Builder.png)
+5. Edit the widget using the SQL Builder mode
+![Grafana Widget Code Edit](src/Images/Grafana_Select_Code.png)
+
+
+ToDO: We need to build some kind of database schema so we know what data is being referenced in Grafana 
