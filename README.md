@@ -4,10 +4,6 @@ This repository stores configuration items & documentation for the Food Security
 Details to set up the user profile can be found here:
 [Setup Guide](./UserSetup.md)
 
-# Food Security Dashboard - Developer Manual
-
-| This manual shows how to stand up a minimal food-security monitoring stack on AWS with MySQL and Grafana, and wire in simple alerting.
-
 ## Architecture
 
 ![System Schema](./src/Images/system_diagram.drawio.png)
@@ -31,7 +27,7 @@ Note that this section will be entirely based on your resources and budget.
 
 ### Billing Guardrails
 
-- You can enable alerts via Cost Budgets with email alerts at 50, 80 and 100 percent of you monthly cap.
+- You can enable alerts via Cost Budgets with email alerts at 50, 80 and 100 percent of your monthly cap.
 - AWS Cost Explorer can assist you in finding where any abnormal costs may be coming from.
 
 ### Identity and Access
@@ -157,19 +153,19 @@ sudo systemctl edit grafana-server.service
 1. Access **config file** for Grafana.
 2. Open **config file** using a text editor.
 3. Locate the **SMTP settings** section.
-4. Specify the following **parameters**:
-    i. *enabled* = true
-    ii. *host* = your-host:25
-    iii. *user* = your-SMTP-username
-        a. If authentication is required for SMTP.
-    iv. *password* = your-SMTP-username
-        a. If authentication is required for SMTP.
-    v. *from_address* = the-email-address-emails-will-come-from
-    vi. *from_name* = the-name-the-email-will-appear-from
-    vii. *skip_verify* = true
-        a. It is **highly** recommended to turn this on after testing.
-5. **Save and close** the config file
-6. **Restart** Grafana
+4. Specify the following **parameters**:<br>
+    i. *enabled* = true<br>
+    ii. *host* = your-host:25<br>
+    iii. *user* = your-SMTP-username<br>
+        a. If authentication is required for SMTP.<br>
+    iv. *password* = your-SMTP-username<br>
+        a. If authentication is required for SMTP.<br>
+    v. *from_address* = the-email-address-emails-will-come-from<br>
+    vi. *from_name* = the-name-the-email-will-appear-from<br>
+    vii. *skip_verify* = true<br>
+        a. It is **highly** recommended to turn this on after testing.<br>
+5. **Save and close** the config file<br>
+6. **Restart** Grafana<br>
 
 ### Accessing Grafana
 
