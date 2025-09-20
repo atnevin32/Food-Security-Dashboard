@@ -153,19 +153,19 @@ sudo systemctl edit grafana-server.service
 1. Access **config file** for Grafana.
 2. Open **config file** using a text editor.
 3. Locate the **SMTP settings** section.
-4. Specify the following **parameters**:<br>
-    i. *enabled* = true<br>
-    ii. *host* = your-host:25<br>
-    iii. *user* = your-SMTP-username<br>
-        a. If authentication is required for SMTP.<br>
-    iv. *password* = your-SMTP-username<br>
-        a. If authentication is required for SMTP.<br>
-    v. *from_address* = the-email-address-emails-will-come-from<br>
-    vi. *from_name* = the-name-the-email-will-appear-from<br>
-    vii. *skip_verify* = true<br>
-        a. It is **highly** recommended to turn this on after testing.<br>
-5. **Save and close** the config file<br>
-6. **Restart** Grafana<br>
+4. Specify the following **parameters**:\
+  i. *enabled* = true\
+  ii. *host* = your-host:25\
+  iii. *user* = your-SMTP-username\
+    a. If authentication is required for SMTP.\
+  iv. *password* = your-SMTP-username\
+    a. If authentication is required for SMTP.\
+  v. *from_address* = the-email-address-emails-will-come-from\
+  vi. *from_name* = the-name-the-email-will-appear-from\
+  vii. *skip_verify* = true\
+    a. It is **highly** recommended to turn this on after testing.\
+5. **Save and close** the config file
+6. **Restart** Grafana
 
 ### Accessing Grafana
 
@@ -268,7 +268,7 @@ More instructions on how to access:
 2. Edit the dashboard
 ![Grafana Edit Dashboard](src/Images/Grafana_Select_Edit.png)
 3. Add the Visualization Widget
-![Grafana Add Visualization](src/Images/Grafana_Select_Visualization.png)
+![Grafana Add Visualization](src/Images/Grafana_Select_Add_Visualization.png)
 4. Edit the widget using the builder mode
 ![Grafana Widget Builder](src/Images/Grafana_Select_Builder.png)
 5. Edit the widget using the SQL Builder mode
