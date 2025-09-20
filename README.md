@@ -1,14 +1,142 @@
 # Food Security Dashboard
 This repository stores configuration items & documentation for the Food Security dashboard.
 
-
 Details to set up the user profile can be found here:
 [Setup Guide](./UserSetup.md)
 
-### AWS EC2 Details
-EC2 t3.medium with 80gb drive
+# Food Security Dashboard - Developer Manual
 
-### Grafana Details
+| This manual shows how to stand up a minimal food-security monitoring stack on AWS with MySQL and Grafana, and wire in simple alerting.
+
+## Architecture
+
+![System Schema](./src/Images/system_diagram.drawio.png)
+
+## Prerequisites
+
+- AWS account with billing access.
+- Basic Linux and SQL familiarity.
+- A workstation with SSH and Git.
+- Datasets for selected region(s).
+
+### Security Considerations
+
+- Enabled MFA on all human users on the AWS account.
+- Utilise principle of least privilege.
+- Decide what data may contain sensitive attributes, avoid ingesting PII that is not needed for food security analysis.
+
+## AWS Account Setup
+
+Note that this section will be entirely based on your resources and budget.
+
+### Billing Guardrails
+
+- You can enable alerts via Cost Budgets with email alerts at 50, 80 and 100 percent of you monthly cap.
+- AWS Cost Explorer can assist you in finding where any abnormal costs may be coming from.
+
+### Identity and Access
+
+- Create an Administrator role for setup tasks and a Developer role with limited permissions for day-to-day tasks.
+
+### Network and Compute
+
+- Use the default VPC for a quick start, or create a minimal VPC with 1 public subnet.
+- Launch an EC2 Ubuntu 24.04 t3.medium with an 80gb drive or similar to host MySQL and Grafana.
+- Allocate an Elastic IP.
+
+#### Security Group (SG)
+
+- Inbound: Port 22 from your IP, 3000 Grafana from your IP, 3306 MySQL from 127.0.0.1 only.
+- Outbound: Allow all for package updates and API calls.
+
+## Email Alerts
+
+Use an email hosting provider or your own infrastructure to facilitate sending emails. You can view instructions in the Grafana setup section on configuring the config file.
+
+### Security Considerations
+
+- AWS CloudTrail, GuardDuty and Config allow logging and monitoring for the AWS account and services. If you have the budget, it is recommended to enable these.
+- Use roles rather than long-lived access keys.
+- Keep ports closed by default and open them only to specific source IPs.
+- Perform system updates regularly, and test them before deployment to ensure everything is still operational.
+
+## Provision the Instance
+
+- SSH to the instance, then:
+
+```bash
+# Update packages
+sudo apt update && sudo apt -y upgrade
+
+# Install utilities
+sudo apt -y install jq unzip ufw
+
+# Basic firewall
+sudo ufw allow OpenSSH
+sudo ufw allow 3000/tcp   # Grafana UI
+sudo ufw enable
+```
+
+## Install and Secure MySQL
+
+For our project, we utilised MySQL version 8.0.42.
+
+### Installation
+
+```bash
+# Install MySQL Server
+sudo apt -y install mysql-server
+
+# Secure base install
+sudo mysql_secure_installation
+# - Set strong root password
+# - Remove anonymous users
+# - Disallow remote root login
+# - Remove test database
+```
+
+### Bind and Users
+
+```bash
+# Bind to localhost only
+sudo sed -i 's/^bind-address.*/bind-address = 127.0.0.1/' /etc/mysql/mysql.conf.d/mysqld.cnf
+sudo systemctl restart mysql
+# The above bind-address in MySQL’s server config so it listens only on the loopback interface 127.0.0.1, then restarts 
+# MySQL to apply the change.
+
+# Create DB and users
+sudo mysql <<'SQL'
+```
+
+```sql
+-- Create database for indicators
+CREATE DATABASE fsdb CHARACTER SET utf8mb4;
+-- Creates a dedicated database for your indicators and observations using utf8mb4.
+-- utfmb4 ensures correct storage of multilingual text, place names and provider notes.
+
+-- App user with least privilege
+CREATE USER 'fsapp'@'localhost' IDENTIFIED BY 'REPLACE_ME_STRONG';
+-- Creates an application account that can only connect from the local host.
+
+-- Grant minimal rights
+GRANT SELECT, INSERT, UPDATE, DELETE ON fsdb.* TO 'fsapp'@'localhost';
+-- Gives the app only data-manipulation rights on fsdb and nothing else. No schema changes, no user management, no file privileges.
+
+FLUSH PRIVILEGES;
+-- Ensures MySQL reloads the updated grant tables immediately.
+```
+
+### Schema
+
+Schemas utilised in this project can be found here: <https://ecufoodsecurity.com/dokuwiki/doku.php?id=databaseschema>.
+
+### Security Considerations
+
+- Always use strong passwords.
+- Restrict MySQL to localhost when Grafana runs on the same host.
+- For remote access, prefer TLS on a private network only.
+
+## Grafana Details
 Grafana setup details are as follows:
 ```
 sudo apt-get install -y apt-transport-https software-properties-common wget
@@ -23,11 +151,53 @@ sudo systemctl start grafana-server
 sudo systemctl status grafana-server
 sudo systemctl edit grafana-server.service
 ```
+### Configuring SMTP for Grafana
+*Note: [instructions from Grafana website directly](https://grafana.com/docs/grafana/latest/alerting/configure-notifications/manage-contact-points/integrations/configure-email/)*
 
-Alex has the access details.
+1. Access **config file** for Grafana.
+2. Open **config file** using a text editor.
+3. Locate the **SMTP settings** section.
+4. Specify the following **parameters**:
+    i. *enabled* = true
+    ii. *host* = your-host:25
+    iii. *user* = your-SMTP-username
+        a. If authentication is required for SMTP.
+    iv. *password* = your-SMTP-username
+        a. If authentication is required for SMTP.
+    v. *from_address* = the-email-address-emails-will-come-from
+    vi. *from_name* = the-name-the-email-will-appear-from
+    vii. *skip_verify* = true
+        a. It is **highly** recommended to turn this on after testing.
+5. **Save and close** the config file
+6. **Restart** Grafana
 
-Need to change the running port, SSL, domain name, create users.
+### Accessing Grafana
 
+- Grafana can be accessed at http://your-ip:3000 by default.
+- The admin password should be updated immediately.
+
+### Connect Grafana and MySQL
+
+In Grafana, go to Connections -> Add data source -> MySQL
+
+- **Host**: 127.0.0.1:3306
+- **Database**: your-db-name (we used fsbd earlier in this documentation)
+- **User**: your-db-user (we used fsapp earlier in this documentation)
+- **TLS**: skip on localhost only. Use TLS if remote.
+
+### Data Ingestion
+
+Data ingestion methods via the API can be found at the link below.
+
+<https://ecufoodsecurity.com/dokuwiki/doku.php?id=apiload>
+
+### Scheduling
+
+WIP; Detail cron jobs or systemd timers here.
+
+### Security Considerations
+
+- Disable anonymous access in Grafana (Administration -> Users).
 
 ### MySQL Ver 8.0.42
 MySQL has been installed on the Ubuntu server, ready to be connected to Grafana.
@@ -63,6 +233,8 @@ GRANT INSERT, UPDATE, DELETE ON grafana_data.pesticides TO 'user'@'localhost';
 CREATE USER 'grafana_read'@'localhost' IDENTIFIED BY '****';
 
 ```
+
+---
 
 ### Making Grafana Widgets
 I've created a test Dashboard on Grafana called Food Security Statistics.
@@ -106,5 +278,3 @@ More instructions on how to access:
 5. Edit the widget using the SQL Builder mode
 ![Grafana Widget Code Edit](src/Images/Grafana_Select_Code.png)
 
-
-ToDO: We need to build some kind of database schema so we know what data is being referenced in Grafana 
