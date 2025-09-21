@@ -157,13 +157,13 @@ sudo systemctl edit grafana-server.service
   i. *enabled* = true\
   ii. *host* = your-host:25\
   iii. *user* = your-SMTP-username\
-    a. If authentication is required for SMTP.\
+      a. If authentication is required for SMTP.\
   iv. *password* = your-SMTP-username\
-    a. If authentication is required for SMTP.\
+      a. If authentication is required for SMTP.\
   v. *from_address* = the-email-address-emails-will-come-from\
   vi. *from_name* = the-name-the-email-will-appear-from\
   vii. *skip_verify* = true\
-    a. It is **highly** recommended to turn this on after testing.\
+      a. It is **highly** recommended to turn this on after testing.\
 5. **Save and close** the config file
 6. **Restart** Grafana
 
