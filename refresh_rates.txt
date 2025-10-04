@@ -1,0 +1,3 @@
+DTM		2025
+PoveryRate 	2023
+Rainfall 	2025 (Daily)	

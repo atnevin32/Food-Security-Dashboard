@@ -63,6 +63,18 @@ mysql> CREATE TABLE pesticides (
     Unit VARCHAR(100),
     Value INT
 );
+
+mysql> CREATE TABLE yield(
+    AreaCode INT,
+    Area VARCHAR(100),
+    ElementCode INT,
+    Element VARCHAR(100),
+    ItemCode INT,
+    Item VARCHAR(100),
+    Year YEAR,
+    Unit VARCHAR(100),
+    Value INT
+);
 mysql> INSERT INTO pesticides VALUES("Albania", "Use", "Pesticides (Total)", "1998", "tonnes of active ingredients", "439.89");
 
 CREATE USER 'user'@'localhost' IDENTIFIED BY '****';
