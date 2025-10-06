@@ -48,8 +48,8 @@ for col in df.columns:
 dtype_mapping = {col: map_dtype(df[col].dtype) for col in df.columns}
 
 # Step 4: Connect to MySQL using SQLAlchemy
-username = "alex"
-password = "Food_Sec_334"
+username = #Add username here 
+password = #Add password here 
 host = "localhost"
 database = "grafana_data"
 table_name = sys.argv[2] 
